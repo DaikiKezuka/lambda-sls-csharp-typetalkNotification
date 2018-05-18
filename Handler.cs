@@ -11,39 +11,12 @@ namespace Typetalk
 {
     class Handler
     {
-        public void Notification()
+		public static CodepipeLine message;
+        public void Notification(CodepipeLine request, ILambdaContext context)
         {
-            PostWithClientCredentials().Wait();
-            Console.WriteLine("PostWithClientCredentials end.");
-
+			message = request;
             PostWithTypetalkToken().Wait();
             Console.WriteLine("PostWithTypetalkToken end.");
-        }
-
-        public async Task PostWithClientCredentials()
-        {
-            var clientId = "xxxxxxxxxxxxxxxxxxxx";
-            var clientSecret = "xxxxxxxxxxxxxxxxxxxx";
-            var topicId = 12345; //use your topic id
-            var client = new HttpClient();
-
-            var content = new FormUrlEncodedContent(new Dictionary<string, string>() {
-                { "client_id", clientId },
-                { "client_secret", clientSecret },
-                { "grant_type", "client_credentials" },
-                { "scope", "topic.post" }
-            });
-
-            await client.PostAsync("https://typetalk.com/oauth2/access_token", content).ContinueWith(res =>
-            {
-                var str = res.Result.Content.ReadAsStringAsync().Result;
-                var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(str);
-                var accessToken = dic["access_token"];
-
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-                return client.PostAsync("https://typetalk.com/api/v1/topics/" + topicId,
-                    new FormUrlEncodedContent(new Dictionary<string, string>() { { "message", "Hello, Typetalk!" } })).Result;
-            });
         }
 
         public async Task PostWithTypetalkToken()
@@ -52,7 +25,11 @@ namespace Typetalk
             var topicId = 12345; //use your topic id
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>() {
-                { "message", "Hello, Typetalk!" }
+                {
+					 "message",
+					 $"{message.source} is {message.detail.status}.{Environment.NewLine}" + 
+					 $"Pipeline Name : {message.detail.pipeline}{Environment.NewLine}" + 
+					 $"Pipeline Stage : {message.detail.stage}" }
             });
 
             var client = new HttpClient();
@@ -60,5 +37,20 @@ namespace Typetalk
                 "https://typetalk.com/api/v1/topics/" + topicId + $"?typetalkToken={typetalkToken}",
                  content);
         }
+
+		public class CodepipeLine
+		{
+			public string source { get; set; }
+			public detail detail { get; set; }
+		}
+
+		public class detail
+		{
+			public string pipeline { get; set; }
+
+			public string stage { get; set; }
+
+			public string status { get; set; }
+		}
     }
 }

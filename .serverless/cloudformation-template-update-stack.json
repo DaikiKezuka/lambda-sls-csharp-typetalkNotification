@@ -92,7 +92,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/aws-typetalk/dev/1526628787753-2018-05-18T07:33:07.753Z/deploy-package.zip"
+          "S3Key": "serverless/aws-typetalk/dev/1526641977609-2018-05-18T11:12:57.609Z/deploy-package.zip"
         },
         "FunctionName": "aws-typetalk-dev-notification",
         "Handler": "CsharpHandlers::Typetalk.Handler::Notification",
@@ -111,14 +111,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "NotificationLambdaVersiondYlAnuNAdzrBDVJ4ENpTqs75GcDoqQVV9H5kRKbY7I": {
+    "NotificationLambdaVersion2aHdjsnP13h8mCeykD08yejlMdPPvBGWRHLfuOocl2c": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "NotificationLambdaFunction"
         },
-        "CodeSha256": "0zSxVUDgZlzgbIDQ81YXw4kBP0e6Zr13N4EMlcGC8is="
+        "CodeSha256": "FgiSdu/cV4qGYZ+wuS02Q4C6xXluWx7zqug513Eb87A="
       }
     }
   },
@@ -131,7 +131,7 @@
     "NotificationLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "NotificationLambdaVersiondYlAnuNAdzrBDVJ4ENpTqs75GcDoqQVV9H5kRKbY7I"
+        "Ref": "NotificationLambdaVersion2aHdjsnP13h8mCeykD08yejlMdPPvBGWRHLfuOocl2c"
       }
     }
   }
