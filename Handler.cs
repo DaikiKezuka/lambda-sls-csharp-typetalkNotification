@@ -11,10 +11,10 @@ namespace Typetalk
 {
     class Handler
     {
-		public static CodepipeLine message;
+        public static CodepipeLine message;
         public void Notification(CodepipeLine request, ILambdaContext context)
         {
-			message = request;
+            message = request;
             PostWithTypetalkToken().Wait();
             Console.WriteLine("PostWithTypetalkToken end.");
         }
@@ -26,10 +26,10 @@ namespace Typetalk
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>() {
                 {
-					 "message",
-					 $"{message.source} is {message.detail.status}.{Environment.NewLine}" + 
-					 $"Pipeline Name : {message.detail.pipeline}{Environment.NewLine}" + 
-					 $"Pipeline Stage : {message.detail.stage}" }
+                     "message",
+                     $"{message.source} is {message.detail.status}.{Environment.NewLine}" +
+                     $"Pipeline Name : {message.detail.pipeline}{Environment.NewLine}" +
+                     $"Pipeline Stage : {message.detail.stage}" }
             });
 
             var client = new HttpClient();
@@ -38,19 +38,19 @@ namespace Typetalk
                  content);
         }
 
-		public class CodepipeLine
-		{
-			public string source { get; set; }
-			public detail detail { get; set; }
-		}
+        public class CodepipeLine
+        {
+            public string source { get; set; }
+            public detail detail { get; set; }
+        }
 
-		public class detail
-		{
-			public string pipeline { get; set; }
+        public class detail
+        {
+            public string pipeline { get; set; }
 
-			public string stage { get; set; }
+            public string stage { get; set; }
 
-			public string status { get; set; }
-		}
+            public string status { get; set; }
+        }
     }
 }
