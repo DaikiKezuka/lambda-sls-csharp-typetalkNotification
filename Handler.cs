@@ -11,54 +11,74 @@ namespace Typetalk
 {
     class Handler
     {
-        public void Notification()
+        public void Notification(EventData input, ILambdaContext context)
         {
-            PostWithClientCredentials().Wait();
-            Console.WriteLine("PostWithClientCredentials end.");
+            if (null == input)
+            {
+                return;
+            }
 
-            PostWithTypetalkToken().Wait();
+            PostWithTypetalkToken(input?.Records[0]).Wait();
+
             Console.WriteLine("PostWithTypetalkToken end.");
         }
 
-        public async Task PostWithClientCredentials()
+        public async Task PostWithTypetalkToken(Record record)
         {
-            var clientId = "xxxxxxxxxxxxxxxxxxxx";
-            var clientSecret = "xxxxxxxxxxxxxxxxxxxx";
-            var topicId = 12345; //use your topic id
-            var client = new HttpClient();
-
-            var content = new FormUrlEncodedContent(new Dictionary<string, string>() {
-                { "client_id", clientId },
-                { "client_secret", clientSecret },
-                { "grant_type", "client_credentials" },
-                { "scope", "topic.post" }
-            });
-
-            await client.PostAsync("https://typetalk.com/oauth2/access_token", content).ContinueWith(res =>
+            if (await ValidateHealthUrl(record))
             {
-                var str = res.Result.Content.ReadAsStringAsync().Result;
-                var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(str);
-                var accessToken = dic["access_token"];
+                return;
+            }
 
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-                return client.PostAsync("https://typetalk.com/api/v1/topics/" + topicId,
-                    new FormUrlEncodedContent(new Dictionary<string, string>() { { "message", "Hello, Typetalk!" } })).Result;
-            });
-        }
-
-        public async Task PostWithTypetalkToken()
-        {
             var typetalkToken = "xxxxxxxxxxxxxxxxxxxx";
             var topicId = 12345; //use your topic id
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>() {
-                { "message", "Hello, Typetalk!" }
+                {
+                    "message",
+                    $"EventSubscriptionArn : {record.EventSubscriptionArn}{Environment.NewLine}" +
+                    $"Subject : {record.Sns.Subject}"
+                }
             });
 
             var client = new HttpClient();
             await client.PostAsync(
                 "https://typetalk.com/api/v1/topics/" + topicId + $"?typetalkToken={typetalkToken}",
                  content);
+        }
+        public async Task<bool> ValidateHealthUrl(Record record)
+        {
+            var result = true;
+
+            var url = $"https://HealthURL";
+
+            var client = new HttpClient();
+            var response = await client.GetAsync(url);
+
+            Console.WriteLine($"HealthURL({url}) StatusCode is {response.StatusCode.ToString()}.");
+
+            if (response.StatusCode.ToString() != "200")
+            {
+                result = false;
+            }
+
+            return result;
+        }
+
+        public class EventData
+        {
+            public Record[] Records { get; set; }
+        }
+
+        public class Record
+        {
+            public string EventSubscriptionArn { get; set; }
+            public Sns Sns { get; set; }
+        }
+
+        public class Sns
+        {
+            public string Subject { get; set; }
         }
     }
 }

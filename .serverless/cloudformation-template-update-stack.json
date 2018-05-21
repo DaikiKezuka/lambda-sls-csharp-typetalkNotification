@@ -8,7 +8,7 @@
     "NotificationLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/aws-typetalk-dev-notification"
+        "LogGroupName": "/aws/lambda/eb-typetalk-dev-notification"
       }
     },
     "IamRoleLambdaExecution": {
@@ -37,7 +37,7 @@
                 "-",
                 [
                   "dev",
-                  "aws-typetalk",
+                  "eb-typetalk",
                   "lambda"
                 ]
               ]
@@ -52,7 +52,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-typetalk-dev-notification:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/eb-typetalk-dev-notification:*"
                     }
                   ]
                 },
@@ -63,7 +63,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-typetalk-dev-notification:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/eb-typetalk-dev-notification:*:*"
                     }
                   ]
                 }
@@ -76,7 +76,7 @@
           "Fn::Join": [
             "-",
             [
-              "aws-typetalk",
+              "eb-typetalk",
               "dev",
               "ap-northeast-1",
               "lambdaRole"
@@ -92,9 +92,9 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/aws-typetalk/dev/1526628787753-2018-05-18T07:33:07.753Z/deploy-package.zip"
+          "S3Key": "serverless/eb-typetalk/dev/1526900029090-2018-05-21T10:53:49.090Z/deploy-package.zip"
         },
-        "FunctionName": "aws-typetalk-dev-notification",
+        "FunctionName": "eb-typetalk-dev-notification",
         "Handler": "CsharpHandlers::Typetalk.Handler::Notification",
         "MemorySize": 1024,
         "Role": {
@@ -111,14 +111,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "NotificationLambdaVersiondYlAnuNAdzrBDVJ4ENpTqs75GcDoqQVV9H5kRKbY7I": {
+    "NotificationLambdaVersion1XlvIXGbfL116teYS6UwPD591gwS9Np9gdvsqMGzBA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "NotificationLambdaFunction"
         },
-        "CodeSha256": "0zSxVUDgZlzgbIDQ81YXw4kBP0e6Zr13N4EMlcGC8is="
+        "CodeSha256": "gdAcxHrQ9FFP/k1Uj1ZQgOpuftVr+dqfG7KbOB2tSUQ="
       }
     }
   },
@@ -131,7 +131,7 @@
     "NotificationLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "NotificationLambdaVersiondYlAnuNAdzrBDVJ4ENpTqs75GcDoqQVV9H5kRKbY7I"
+        "Ref": "NotificationLambdaVersion1XlvIXGbfL116teYS6UwPD591gwS9Np9gdvsqMGzBA"
       }
     }
   }
